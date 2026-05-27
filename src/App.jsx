@@ -5,8 +5,8 @@ import {
 
 const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');`;
 
-const SYSTEM = `You are an expert SEO auditor. Analyze the URL and return ONLY valid compact JSON (no markdown, no backticks, no preamble). All text ≤12 words each. Exact schema:
-{"overall_score":INT,"business_type":"STRING","summary":"Two short sentences max.","critical_issues":["STR","STR","STR"],"quick_wins":["STR","STR","STR"],"categories":[{"name":"Technical SEO","score":INT,"weight":22,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"Content Quality","score":INT,"weight":23,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"On-Page SEO","score":INT,"weight":20,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"Schema & Structure","score":INT,"weight":10,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"Performance","score":INT,"weight":10,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"AI Readiness","score":INT,"weight":10,"issues":["STR","STR"],"recommendations":["STR","STR"]},{"name":"Images","score":INT,"weight":5,"issues":["STR","STR"],"recommendations":["STR","STR"]}],"action_plan":[{"priority":"Critical","action":"STR","impact":"High","effort":"Low","timeline":"Week 1"},{"priority":"High","action":"STR","impact":"High","effort":"Medium","timeline":"Week 2-4"},{"priority":"High","action":"STR","impact":"Medium","effort":"Low","timeline":"Week 2-4"},{"priority":"Medium","action":"STR","impact":"Medium","effort":"Medium","timeline":"Month 2-3"},{"priority":"Low","action":"STR","impact":"Low","effort":"Low","timeline":"Backlog"}]}`;
+const SYSTEM = `You are an expert SEO auditor. Analyze the URL and return ONLY valid compact JSON (no markdown, no backticks, no preamble). Use complete, informative sentences — explain the why behind each finding so the reader understands the impact. Exact schema:
+{"overall_score":INT,"business_type":"STRING","summary":"2-3 sentences summarizing overall SEO health, key strengths, and the most urgent priority.","critical_issues":["Full sentence describing the issue and why it hurts SEO or user experience","Full sentence describing the issue and why it hurts SEO or user experience","Full sentence describing the issue and why it hurts SEO or user experience"],"quick_wins":["Full sentence describing the opportunity and the improvement it will deliver","Full sentence describing the opportunity and the improvement it will deliver","Full sentence describing the opportunity and the improvement it will deliver"],"categories":[{"name":"Technical SEO","score":INT,"weight":22,"explanation":"1-2 sentences summarizing what was found in this category and what it means for the site's crawlability and indexability.","issues":["Detailed issue with context about its SEO impact","Detailed issue with context about its SEO impact","Detailed issue with context about its SEO impact"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"Content Quality","score":INT,"weight":23,"explanation":"1-2 sentences summarizing content depth, relevance, and E-E-A-T signals found.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"On-Page SEO","score":INT,"weight":20,"explanation":"1-2 sentences summarizing title tags, meta descriptions, heading structure, and keyword optimization findings.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"Schema & Structure","score":INT,"weight":10,"explanation":"1-2 sentences summarizing structured data implementation and site architecture findings.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"Performance","score":INT,"weight":10,"explanation":"1-2 sentences summarizing page speed, Core Web Vitals signals, and performance bottlenecks found.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"AI Readiness","score":INT,"weight":10,"explanation":"1-2 sentences summarizing how well the site is optimized for AI-powered search and answer engines.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]},{"name":"Images","score":INT,"weight":5,"explanation":"1-2 sentences summarizing alt text coverage, image optimization, and visual SEO findings.","issues":["Detailed issue with context","Detailed issue with context","Detailed issue with context"],"recommendations":["Specific actionable step with expected outcome","Specific actionable step with expected outcome","Specific actionable step with expected outcome"]}],"action_plan":[{"priority":"Critical","action":"Specific action to take","details":"Why this matters and what measurable improvement to expect.","impact":"High","effort":"Low","timeline":"Week 1"},{"priority":"High","action":"Specific action to take","details":"Why this matters and what measurable improvement to expect.","impact":"High","effort":"Medium","timeline":"Week 2-4"},{"priority":"High","action":"Specific action to take","details":"Why this matters and what measurable improvement to expect.","impact":"Medium","effort":"Low","timeline":"Week 2-4"},{"priority":"Medium","action":"Specific action to take","details":"Why this matters and what measurable improvement to expect.","impact":"Medium","effort":"Medium","timeline":"Month 2-3"},{"priority":"Low","action":"Specific action to take","details":"Why this matters and what measurable improvement to expect.","impact":"Low","effort":"Low","timeline":"Backlog"}]}`;
 
 const scoreColor = s => s >= 80 ? "#22c55e" : s >= 60 ? "#f0a030" : "#ef4444";
 const scoreLabel = s => s >= 80 ? "Excellent" : s >= 60 ? "Needs Work" : "Critical";
@@ -119,7 +119,7 @@ export default function SEOAuditLab() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          max_tokens: 2500,
           system: SYSTEM,
           messages: [{ role: "user", content: `SEO audit for: ${trimmed}` }]
         })
@@ -303,7 +303,7 @@ export default function SEOAuditLab() {
             </div>
             {cat && (
               <div style={{ background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.07)", borderRadius: 14, padding: "24px 26px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 22 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
                   <div>
                     <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{cat.name}</div>
                     <div style={{ fontSize: 12, color: "#5a6070", fontFamily: "'JetBrains Mono',monospace" }}>WEIGHT · {cat.weight}% OF TOTAL SCORE</div>
@@ -313,6 +313,11 @@ export default function SEOAuditLab() {
                     <div style={{ fontSize: 11, color: "#5a6070", fontFamily: "'JetBrains Mono',monospace" }}>{scoreLabel(cat.score)}</div>
                   </div>
                 </div>
+                {cat.explanation && (
+                  <div style={{ background: "rgba(240,160,48,.05)", border: "1px solid rgba(240,160,48,.12)", borderRadius: 10, padding: "12px 16px", marginBottom: 22 }}>
+                    <span style={{ fontSize: 13, color: "#a89070", lineHeight: 1.65 }}>{cat.explanation}</span>
+                  </div>
+                )}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
                   <div>
                     <div style={{ fontSize: 10, color: "#ef4444", fontFamily: "'JetBrains Mono',monospace", letterSpacing: 3, marginBottom: 12 }}>ISSUES FOUND</div>
@@ -344,7 +349,10 @@ export default function SEOAuditLab() {
               {audit.action_plan?.map((item, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.06)", borderRadius: 11, padding: "13px 18px", flexWrap: "wrap" }}>
                   <span style={{ background: `${PCOL[item.priority]}18`, border: `1px solid ${PCOL[item.priority]}38`, borderRadius: 100, padding: "3px 12px", fontSize: 10, color: PCOL[item.priority], fontFamily: "'JetBrains Mono',monospace", whiteSpace: "nowrap", flexShrink: 0 }}>{item.priority}</span>
-                  <span style={{ flex: 1, minWidth: 180, fontSize: 13, color: "#c8ccd6" }}>{item.action}</span>
+                  <div style={{ flex: 1, minWidth: 180 }}>
+                    <div style={{ fontSize: 13, color: "#c8ccd6", marginBottom: item.details ? 4 : 0 }}>{item.action}</div>
+                    {item.details && <div style={{ fontSize: 12, color: "#5a6070", lineHeight: 1.55 }}>{item.details}</div>}
+                  </div>
                   <div style={{ display: "flex", gap: 20, flexShrink: 0 }}>
                     {[["IMPACT", item.impact, item.impact === "High" ? "#22c55e" : item.impact === "Medium" ? "#f0a030" : "#6b7280"],
                       ["EFFORT", item.effort, item.effort === "Low" ? "#22c55e" : item.effort === "Medium" ? "#f0a030" : "#ef4444"],
